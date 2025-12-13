@@ -20,7 +20,7 @@ public class Email {
     private UUID id;
     @Column
     private String subject;
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String body;
     @Column(name = "email_trigger",nullable = false)
     @Enumerated(EnumType.STRING)
