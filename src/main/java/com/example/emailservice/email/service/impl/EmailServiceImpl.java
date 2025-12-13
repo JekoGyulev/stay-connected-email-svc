@@ -11,6 +11,9 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @Slf4j
 public class EmailServiceImpl implements EmailService {
@@ -59,5 +62,10 @@ public class EmailServiceImpl implements EmailService {
         } catch (MailException ex) {
             log.error("Email failed due to : {}", ex.getMessage());
         }
+    }
+
+    @Override
+    public List<Email> getAllEmailsByUserIdSortedByCreateDate(UUID userId) {
+        return this.emailRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
     }
 }
