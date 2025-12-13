@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/emails")
+@RequestMapping("/api/v1/emails")
 public class EmailController {
 
     private final EmailService emailService;

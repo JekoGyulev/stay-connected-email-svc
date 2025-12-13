@@ -1,11 +1,13 @@
 package com.example.emailservice.email.service.impl;
 
+import com.example.emailservice.email.enums.EmailStatus;
 import com.example.emailservice.email.enums.EmailTrigger;
 import com.example.emailservice.email.model.Email;
 import com.example.emailservice.email.repository.EmailRepository;
 import com.example.emailservice.email.service.EmailService;
 import com.example.emailservice.web.dto.UserRegisteredEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -32,6 +34,7 @@ public class EmailServiceImpl implements EmailService {
     private final EmailRepository emailRepository;
     private final MailSender mailSender;
 
+    @Autowired
     public EmailServiceImpl(EmailRepository emailRepository, MailSender mailSender) {
         this.emailRepository = emailRepository;
         this.mailSender = mailSender;
@@ -44,6 +47,7 @@ public class EmailServiceImpl implements EmailService {
                 .subject(SUCCESSFUL_REGISTER_SUBJECT_MESSAGE)
                 .body(SUCCESSFUL_REGISTER_BODY_MESSAGE.formatted(event.getUsername()))
                 .emailTrigger(EmailTrigger.REGISTER)
+                .status(EmailStatus.PENDING)
                 .userId(event.getUserId())
                 .createdAt(event.getCreatedAt())
                 .build();
@@ -58,9 +62,13 @@ public class EmailServiceImpl implements EmailService {
 
         try {
             this.mailSender.send(message);
+            email.setStatus(EmailStatus.SENT);
             log.info("Email has been sent to " + event.getUserEmail());
         } catch (MailException ex) {
             log.error("Email failed due to : {}", ex.getMessage());
+            email.setStatus(EmailStatus.FAILED);
+        } finally {
+            this.emailRepository.save(email);
         }
     }
 

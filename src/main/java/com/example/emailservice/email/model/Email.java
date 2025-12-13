@@ -1,5 +1,6 @@
 package com.example.emailservice.email.model;
 
+import com.example.emailservice.email.enums.EmailStatus;
 import com.example.emailservice.email.enums.EmailTrigger;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,6 +26,9 @@ public class Email {
     @Column(name = "email_trigger",nullable = false)
     @Enumerated(EnumType.STRING)
     private EmailTrigger emailTrigger;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EmailStatus status;
     @Column(nullable = false)
     private UUID userId;
     @Column(name = "created_at",nullable = false)
