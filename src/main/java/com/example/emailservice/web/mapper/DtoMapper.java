@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class DtoMapper {
 
     public static EmailResponse fromEmail(Email email) {
-
         return EmailResponse.builder()
                 .emailId(email.getId())
                 .subject(email.getSubject())
