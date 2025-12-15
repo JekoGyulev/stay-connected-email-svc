@@ -1,4 +1,4 @@
-package com.example.emailservice;
+package com.example.stayconnected;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

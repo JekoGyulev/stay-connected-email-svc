@@ -1,8 +1,8 @@
-package com.example.emailservice.web.mapper;
+package com.example.stayconnected.web.mapper;
 
 
-import com.example.emailservice.email.model.Email;
-import com.example.emailservice.web.dto.EmailResponse;
+import com.example.stayconnected.email.model.Email;
+import com.example.stayconnected.web.dto.EmailResponse;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;

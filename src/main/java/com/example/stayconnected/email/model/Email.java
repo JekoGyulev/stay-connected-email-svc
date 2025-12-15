@@ -1,7 +1,7 @@
-package com.example.emailservice.email.model;
+package com.example.stayconnected.email.model;
 
-import com.example.emailservice.email.enums.EmailStatus;
-import com.example.emailservice.email.enums.EmailTrigger;
+import com.example.stayconnected.email.enums.EmailStatus;
+import com.example.stayconnected.email.enums.EmailTrigger;
 import jakarta.persistence.*;
 import lombok.*;
 

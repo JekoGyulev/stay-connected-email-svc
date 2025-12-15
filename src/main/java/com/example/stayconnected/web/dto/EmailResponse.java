@@ -1,7 +1,7 @@
-package com.example.emailservice.web.dto;
+package com.example.stayconnected.web.dto;
 
-import com.example.emailservice.email.enums.EmailStatus;
-import com.example.emailservice.email.enums.EmailTrigger;
+import com.example.stayconnected.email.enums.EmailStatus;
+import com.example.stayconnected.email.enums.EmailTrigger;
 import lombok.Builder;
 import lombok.Data;
 

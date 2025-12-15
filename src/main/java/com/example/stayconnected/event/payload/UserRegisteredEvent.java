@@ -1,4 +1,4 @@
-package com.example.emailservice.event.payload;
+package com.example.stayconnected.event.payload;
 
 
 import lombok.*;

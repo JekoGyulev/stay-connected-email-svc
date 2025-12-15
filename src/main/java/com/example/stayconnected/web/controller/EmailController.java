@@ -1,10 +1,10 @@
-package com.example.emailservice.web.controller;
+package com.example.stayconnected.web.controller;
 
 
-import com.example.emailservice.email.model.Email;
-import com.example.emailservice.email.service.EmailService;
-import com.example.emailservice.web.dto.EmailResponse;
-import com.example.emailservice.web.mapper.DtoMapper;
+import com.example.stayconnected.email.model.Email;
+import com.example.stayconnected.email.service.EmailService;
+import com.example.stayconnected.web.dto.EmailResponse;
+import com.example.stayconnected.web.mapper.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

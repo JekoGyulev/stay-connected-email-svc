@@ -1,4 +1,4 @@
-package com.example.emailservice.email.enums;
+package com.example.stayconnected.email.enums;
 
 public enum EmailStatus {
     PENDING,

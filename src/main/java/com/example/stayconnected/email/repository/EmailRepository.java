@@ -1,6 +1,6 @@
-package com.example.emailservice.email.repository;
+package com.example.stayconnected.email.repository;
 
-import com.example.emailservice.email.model.Email;
+import com.example.stayconnected.email.model.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
