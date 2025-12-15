@@ -6,6 +6,7 @@ import com.example.stayconnected.email.model.Email;
 import com.example.stayconnected.email.repository.EmailRepository;
 import com.example.stayconnected.email.service.EmailService;
 import com.example.stayconnected.event.payload.ReservationBookedEvent;
+import com.example.stayconnected.event.payload.ReservationCancelledEvent;
 import com.example.stayconnected.event.payload.UserRegisteredEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class EmailServiceImpl implements EmailService {
 
     private static final String SUCCESSFUL_REGISTER_SUBJECT_MESSAGE = "Welcome to our platform!✈️";
     private static final String SUCCESSFUL_RESERVATION_BOOKED_SUBJECT_MESSAGE = "✅ Your Reservation Has Been Successfully Booked!";
+    private static final String SUCCESSFUL_RESERVATION_CANCELLED_SUBJECT_MESSAGE = "Your Reservation Has Been Cancelled Successfully";
+
 
     private static final String SUCCESSFUL_REGISTER_BODY_MESSAGE ="""
                                                     Hi %s,
@@ -50,6 +53,21 @@ public class EmailServiceImpl implements EmailService {
                                                     Best regards,
                                                     StayConnected Team
        \s""";
+
+    private static final String SUCCESSFUL_RESERVATION_CANCELLED_BODY_MESSAGE = """
+                                                    Hi %s,
+                                                   \s
+                                                    We wanted to let you know that your reservation from %s to %s has been successfully cancelled.
+                                                   \s
+                                                    A refund of €%.2f has been processed and should reflect in your account shortly.
+                                                   \s
+                                                    If this was a mistake or you’d like to make a new reservation, feel free to visit our platform and book again at your convenience.
+                                                   \s
+                                                    Thank you for using StayConnected!
+                                                   \s
+                                                    Best regards,
+                                                    The StayConnected Team
+           \s""";
 
 
     private final EmailRepository emailRepository;
@@ -111,6 +129,30 @@ public class EmailServiceImpl implements EmailService {
         message.setTo(event.getUserEmail());
         message.setFrom(fromEmailUsername);
 
+
+        sendEmail(message, email, event.getUserEmail());
+    }
+
+    @Override
+    public void handleReservationCancelled(ReservationCancelledEvent event) {
+
+        Email email = Email.builder()
+                .subject(SUCCESSFUL_RESERVATION_CANCELLED_SUBJECT_MESSAGE)
+                .body(SUCCESSFUL_RESERVATION_CANCELLED_BODY_MESSAGE
+                        .formatted(event.getUsername(), event.getReservationStartDate(),
+                                event.getReservationEndDate(), event.getReservationTotalPrice()))
+                .emailTrigger(EmailTrigger.CANCEL_RESERVATION)
+                .status(EmailStatus.PENDING)
+                .userId(event.getUserId())
+                .createdAt(LocalDateTime.now())
+                .build();
+
+
+        SimpleMailMessage message =  new SimpleMailMessage();
+        message.setSubject(email.getSubject());
+        message.setText(email.getBody());
+        message.setTo(event.getUserEmail());
+        message.setFrom(fromEmailUsername);
 
         sendEmail(message, email, event.getUserEmail());
     }

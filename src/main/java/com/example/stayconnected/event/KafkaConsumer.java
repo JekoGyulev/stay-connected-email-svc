@@ -2,6 +2,7 @@ package com.example.stayconnected.event;
 
 import com.example.stayconnected.email.service.EmailService;
 import com.example.stayconnected.event.payload.ReservationBookedEvent;
+import com.example.stayconnected.event.payload.ReservationCancelledEvent;
 import com.example.stayconnected.event.payload.UserRegisteredEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -27,6 +28,8 @@ public class KafkaConsumer {
         this.emailService.handleReservationBooked(event);
     }
 
-    // Add kafka listeners for topic : reservation-cancelled-event.v1
-
-}
+    @KafkaListener(topics = "reservation-cancelled-event.v1", groupId = "email-svc")
+    public void consumeReservationCancelled(ReservationCancelledEvent event) {
+        this.emailService.handleReservationCancelled(event);
+    }
+ }
