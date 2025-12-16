@@ -1,6 +1,7 @@
 package com.example.stayconnected.web.controller;
 
 
+import com.example.stayconnected.email.enums.EmailStatus;
 import com.example.stayconnected.email.model.Email;
 import com.example.stayconnected.email.service.EmailService;
 import com.example.stayconnected.web.dto.EmailResponse;
@@ -39,6 +40,22 @@ public class EmailController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(emailResponses);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<EmailResponse>> getEmailsByStatusAndUserId(@RequestParam(value = "status") String emailStatus,
+                                                                          @RequestParam(value = "userId") UUID userId) {
+
+        EmailStatus status = EmailStatus.valueOf(emailStatus);
+
+        List<Email> emails = this.emailService.getAllEmailsByStatusAndUserId(status, userId);
+
+        List<EmailResponse> emailResponses = emails.stream()
+                .map(DtoMapper::fromEmail)
+                .toList();
+
+
+        return ResponseEntity.ok(emailResponses);
     }
 
 

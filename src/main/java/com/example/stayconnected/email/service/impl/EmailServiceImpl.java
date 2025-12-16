@@ -25,7 +25,7 @@ import java.util.UUID;
 public class EmailServiceImpl implements EmailService {
 
     private static final String SUCCESSFUL_REGISTER_SUBJECT_MESSAGE = "Welcome to our platform!✈️";
-    private static final String SUCCESSFUL_RESERVATION_BOOKED_SUBJECT_MESSAGE = "✅ Your Reservation Has Been Successfully Booked!";
+    private static final String SUCCESSFUL_RESERVATION_BOOKED_SUBJECT_MESSAGE = "Your Reservation Has Been Successfully Booked!";
     private static final String SUCCESSFUL_RESERVATION_CANCELLED_SUBJECT_MESSAGE = "Your Reservation Has Been Cancelled Successfully";
 
 
@@ -160,6 +160,11 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public List<Email> getAllEmailsByUserIdSortedByCreateDate(UUID userId) {
         return this.emailRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
+    }
+
+    @Override
+    public List<Email> getAllEmailsByStatusAndUserId(EmailStatus status, UUID userId) {
+        return this.emailRepository.findAllByStatusAndUserId(status, userId);
     }
 
 

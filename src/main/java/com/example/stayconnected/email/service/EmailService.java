@@ -1,5 +1,6 @@
 package com.example.stayconnected.email.service;
 
+import com.example.stayconnected.email.enums.EmailStatus;
 import com.example.stayconnected.email.model.Email;
 import com.example.stayconnected.event.payload.ReservationBookedEvent;
 import com.example.stayconnected.event.payload.ReservationCancelledEvent;
@@ -17,4 +18,6 @@ public interface EmailService {
     void handleReservationCancelled(ReservationCancelledEvent event);
 
     List<Email> getAllEmailsByUserIdSortedByCreateDate(UUID userId);
+
+    List<Email> getAllEmailsByStatusAndUserId(EmailStatus status, UUID userId);
 }
