@@ -42,23 +42,5 @@ public class EmailController {
                 .body(emailResponses);
     }
 
-    @GetMapping
-    public ResponseEntity<List<EmailResponse>> getEmailsByStatusAndUserId(@RequestParam(value = "status") String emailStatus,
-                                                                          @RequestParam(value = "userId") UUID userId) {
-
-        EmailStatus status = EmailStatus.valueOf(emailStatus);
-
-        List<Email> emails = this.emailService.getAllEmailsByStatusAndUserId(status, userId);
-
-        List<EmailResponse> emailResponses = emails.stream()
-                .map(DtoMapper::fromEmail)
-                .toList();
-
-
-        return ResponseEntity.ok(emailResponses);
-    }
-
-
-
 
 }

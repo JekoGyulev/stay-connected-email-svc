@@ -18,6 +18,4 @@ public interface EmailService {
     void handleReservationCancelled(ReservationCancelledEvent event);
 
     List<Email> getAllEmailsByUserIdSortedByCreateDate(UUID userId);
-
-    List<Email> getAllEmailsByStatusAndUserId(EmailStatus status, UUID userId);
 }

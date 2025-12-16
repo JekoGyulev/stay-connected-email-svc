@@ -162,12 +162,6 @@ public class EmailServiceImpl implements EmailService {
         return this.emailRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
     }
 
-    @Override
-    public List<Email> getAllEmailsByStatusAndUserId(EmailStatus status, UUID userId) {
-        return this.emailRepository.findAllByStatusAndUserId(status, userId);
-    }
-
-
     private void sendEmail(SimpleMailMessage message, Email email, String userEmail) {
         try {
             this.mailSender.send(message);
