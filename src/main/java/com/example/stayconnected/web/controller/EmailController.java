@@ -30,8 +30,10 @@ public class EmailController {
 
 
     @GetMapping
-    public ResponseEntity<List<EmailResponse>> getEmailsByUser(@RequestParam(value = "userId") UUID userId) {
-        List<Email> emailsByUser = this.emailService.getAllEmailsByUserIdSortedByCreateDate(userId);
+    public ResponseEntity<List<EmailResponse>> getEmailsByUser( @RequestParam(value = "search", required = false) String search,
+                                                                @RequestParam(value = "userId") UUID userId) {
+
+        List<Email> emailsByUser = this.emailService.getAllEmailsByUserIdSortedByCreateDate(search,userId);
 
         List<EmailResponse> emailResponses = emailsByUser.stream()
                 .map(DtoMapper::fromEmail)

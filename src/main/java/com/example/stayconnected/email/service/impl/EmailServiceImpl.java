@@ -158,9 +158,15 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public List<Email> getAllEmailsByUserIdSortedByCreateDate(UUID userId) {
+    public List<Email> getAllEmailsByUserIdSortedByCreateDate(String search,UUID userId) {
+
+        if (search != null) {
+            return this.emailRepository.findBySubjectContainingIgnoreCaseAndUserIdOrderByCreatedAtDesc(search,userId);
+        }
+
         return this.emailRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
     }
+
 
     private void sendEmail(SimpleMailMessage message, Email email, String userEmail) {
         try {
