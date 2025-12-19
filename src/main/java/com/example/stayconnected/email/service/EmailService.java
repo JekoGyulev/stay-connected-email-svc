@@ -2,6 +2,7 @@ package com.example.stayconnected.email.service;
 
 
 import com.example.stayconnected.email.model.Email;
+import com.example.stayconnected.event.payload.PasswordChangedEvent;
 import com.example.stayconnected.event.payload.ReservationBookedEvent;
 import com.example.stayconnected.event.payload.ReservationCancelledEvent;
 import com.example.stayconnected.event.payload.UserRegisteredEvent;
@@ -18,4 +19,6 @@ public interface EmailService {
     void handleReservationCancelled(ReservationCancelledEvent event);
 
     List<Email> getAllEmailsByUserIdSortedByCreateDate(String search,UUID userId);
+
+    void handlePasswordChanged(PasswordChangedEvent event);
 }

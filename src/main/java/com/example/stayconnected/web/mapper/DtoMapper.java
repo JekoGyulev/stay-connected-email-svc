@@ -17,7 +17,7 @@ public class DtoMapper {
                 .emailTrigger(email.getEmailTrigger())
                 .emailStatus(email.getStatus())
                 .userId(email.getUserId())
-                .createdAt(LocalDateTime.now())
+                .createdAt(email.getCreatedAt())
                 .build();
     }
 

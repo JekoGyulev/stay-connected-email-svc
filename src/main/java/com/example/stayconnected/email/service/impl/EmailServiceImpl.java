@@ -5,6 +5,7 @@ import com.example.stayconnected.email.enums.EmailTrigger;
 import com.example.stayconnected.email.model.Email;
 import com.example.stayconnected.email.repository.EmailRepository;
 import com.example.stayconnected.email.service.EmailService;
+import com.example.stayconnected.event.payload.PasswordChangedEvent;
 import com.example.stayconnected.event.payload.ReservationBookedEvent;
 import com.example.stayconnected.event.payload.ReservationCancelledEvent;
 import com.example.stayconnected.event.payload.UserRegisteredEvent;
@@ -17,6 +18,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,8 +27,10 @@ import java.util.UUID;
 public class EmailServiceImpl implements EmailService {
 
     private static final String SUCCESSFUL_REGISTER_SUBJECT_MESSAGE = "Welcome to our platform!✈️";
-    private static final String SUCCESSFUL_RESERVATION_BOOKED_SUBJECT_MESSAGE = "Your Reservation Has Been Successfully Booked!";
+    private static final String SUCCESSFUL_RESERVATION_BOOKED_SUBJECT_MESSAGE = "Your Reservation Has Been Successfully Booked";
     private static final String SUCCESSFUL_RESERVATION_CANCELLED_SUBJECT_MESSAGE = "Your Reservation Has Been Cancelled Successfully";
+    private static final String SUCCESSFUL_PASSWORD_CHANGED_SUBJECT_MESSAGE = "Your Password Has Been Changed Successfully";
+
 
 
     private static final String SUCCESSFUL_REGISTER_BODY_MESSAGE ="""
@@ -68,6 +72,21 @@ public class EmailServiceImpl implements EmailService {
                                                     Best regards,
                                                     The StayConnected Team
            \s""";
+
+    private static final String SUCCESSFUL_PASSWORD_CHANGED_BODY_MESSAGE = """
+                                                    Hi %s,
+                                                   \s
+                                                    This is a confirmation that your account password was successfully changed at %s.
+                                                   \s
+                                                    If you made this change, no further action is required.
+                                                   \s
+                                                    If you did not change your password, please reset it immediately and contact our support team to secure your account.
+                                                   \s
+                                                    Thank you for using StayConnected!
+                                                   \s
+                                                    Best regards,
+                                                    The StayConnected Team
+            \s""";
 
 
     private final EmailRepository emailRepository;
@@ -165,6 +184,34 @@ public class EmailServiceImpl implements EmailService {
         }
 
         return this.emailRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
+    }
+
+    @Override
+    public void handlePasswordChanged(PasswordChangedEvent event) {
+
+        LocalDateTime changedAt = event.getChangedAt();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = changedAt.format(formatter);
+
+        Email email = Email.builder()
+                .subject(SUCCESSFUL_PASSWORD_CHANGED_SUBJECT_MESSAGE)
+                .body(SUCCESSFUL_PASSWORD_CHANGED_BODY_MESSAGE.formatted(event.getUsername(), formattedDateTime))
+                .emailTrigger(EmailTrigger.CHANGE_PASSWORD)
+                .status(EmailStatus.PENDING)
+                .userId(event.getUserId())
+                .createdAt(changedAt)
+                .build();
+
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setSubject(email.getSubject());
+        message.setText(email.getBody());
+        message.setTo(event.getUserEmail());
+        message.setFrom(fromEmailUsername);
+
+
+        sendEmail(message, email, event.getUserEmail());
     }
 
 

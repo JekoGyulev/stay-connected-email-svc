@@ -1,6 +1,7 @@
 package com.example.stayconnected.event;
 
 import com.example.stayconnected.email.service.EmailService;
+import com.example.stayconnected.event.payload.PasswordChangedEvent;
 import com.example.stayconnected.event.payload.ReservationBookedEvent;
 import com.example.stayconnected.event.payload.ReservationCancelledEvent;
 import com.example.stayconnected.event.payload.UserRegisteredEvent;
@@ -31,5 +32,10 @@ public class KafkaConsumer {
     @KafkaListener(topics = "reservation-cancelled-event.v1", groupId = "email-svc")
     public void consumeReservationCancelled(ReservationCancelledEvent event) {
         this.emailService.handleReservationCancelled(event);
+    }
+
+    @KafkaListener(topics = "password-changed-event.v1", groupId = "email-svc")
+    public void consumePasswordChanged(PasswordChangedEvent event) {
+        this.emailService.handlePasswordChanged(event);
     }
  }
