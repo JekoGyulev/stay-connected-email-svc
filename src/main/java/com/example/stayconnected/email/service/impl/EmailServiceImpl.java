@@ -9,9 +9,12 @@ import com.example.stayconnected.event.payload.PasswordChangedEvent;
 import com.example.stayconnected.event.payload.ReservationBookedEvent;
 import com.example.stayconnected.event.payload.ReservationCancelledEvent;
 import com.example.stayconnected.event.payload.UserRegisteredEvent;
+import com.example.stayconnected.web.dto.PageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -177,13 +180,26 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public List<Email> getAllEmailsByUserIdSortedByCreateDate(String search,UUID userId) {
+    public Page<Email> getAllEmailsByUserIdSortedByCreateDate(int pageNumber, int pageSize, String search, UUID userId) {
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 
         if (search != null) {
-            return this.emailRepository.findBySubjectContainingIgnoreCaseAndUserIdOrderByCreatedAtDesc(search,userId);
+            return this.emailRepository
+                    .findBySubjectContainingIgnoreCaseAndUserIdOrderByCreatedAtDesc(pageRequest, search,userId);
         }
 
-        return this.emailRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
+        return this.emailRepository.findAllByUserIdOrderByCreatedAtDesc(pageRequest, userId);
+    }
+
+    @Override
+    public Page<Email> getAllEmailsByUserIdAndStatusSorted(int pageNumber, int pageSize, UUID userId, String status) {
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+
+        EmailStatus emailStatus = EmailStatus.valueOf(status);
+
+        return this.emailRepository.findAllByUserIdAndStatusOrderByCreatedAtDesc(userId, emailStatus, pageRequest);
     }
 
     @Override
@@ -212,6 +228,18 @@ public class EmailServiceImpl implements EmailService {
 
 
         sendEmail(message, email, event.getUserEmail());
+    }
+
+    @Override
+    public long getTotalEmailsByUserId(UUID userId, String emailStatus) {
+
+        if (emailStatus == null || emailStatus.isEmpty()) {
+            return this.emailRepository.countAllByUserId(userId);
+        }
+
+        EmailStatus status = EmailStatus.valueOf(emailStatus);
+
+        return this.emailRepository.countAllByUserIdAndStatus(userId, status);
     }
 
 
