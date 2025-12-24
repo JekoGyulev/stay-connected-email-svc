@@ -3,10 +3,7 @@ package com.example.stayconnected.email.service;
 
 import com.example.stayconnected.email.enums.EmailStatus;
 import com.example.stayconnected.email.model.Email;
-import com.example.stayconnected.event.payload.PasswordChangedEvent;
-import com.example.stayconnected.event.payload.ReservationBookedEvent;
-import com.example.stayconnected.event.payload.ReservationCancelledEvent;
-import com.example.stayconnected.event.payload.UserRegisteredEvent;
+import com.example.stayconnected.event.payload.*;
 import org.springframework.data.domain.Page;
 
 
@@ -26,5 +23,8 @@ public interface EmailService {
 
     void handlePasswordChanged(PasswordChangedEvent event);
 
+    void handleInquiry(HostInquiryEvent event);
+
     long getTotalEmailsByUserId(UUID userId, String emailStatus);
+
 }

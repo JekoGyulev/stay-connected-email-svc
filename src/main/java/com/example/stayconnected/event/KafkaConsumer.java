@@ -1,10 +1,7 @@
 package com.example.stayconnected.event;
 
 import com.example.stayconnected.email.service.EmailService;
-import com.example.stayconnected.event.payload.PasswordChangedEvent;
-import com.example.stayconnected.event.payload.ReservationBookedEvent;
-import com.example.stayconnected.event.payload.ReservationCancelledEvent;
-import com.example.stayconnected.event.payload.UserRegisteredEvent;
+import com.example.stayconnected.event.payload.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -37,5 +34,10 @@ public class KafkaConsumer {
     @KafkaListener(topics = "password-changed-event.v1", groupId = "email-svc")
     public void consumePasswordChanged(PasswordChangedEvent event) {
         this.emailService.handlePasswordChanged(event);
+    }
+
+    @KafkaListener(topics = "inquiry-host-event.v1", groupId = "email-svc")
+    public void consumeInquiry(HostInquiryEvent event) {
+        this.emailService.handleInquiry(event);
     }
  }

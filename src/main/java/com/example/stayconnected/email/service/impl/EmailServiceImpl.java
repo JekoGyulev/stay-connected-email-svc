@@ -5,10 +5,7 @@ import com.example.stayconnected.email.enums.EmailTrigger;
 import com.example.stayconnected.email.model.Email;
 import com.example.stayconnected.email.repository.EmailRepository;
 import com.example.stayconnected.email.service.EmailService;
-import com.example.stayconnected.event.payload.PasswordChangedEvent;
-import com.example.stayconnected.event.payload.ReservationBookedEvent;
-import com.example.stayconnected.event.payload.ReservationCancelledEvent;
-import com.example.stayconnected.event.payload.UserRegisteredEvent;
+import com.example.stayconnected.event.payload.*;
 import com.example.stayconnected.web.dto.PageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +87,19 @@ public class EmailServiceImpl implements EmailService {
                                                     Best regards,
                                                     The StayConnected Team
             \s""";
+
+    private static final String INQUIRY_HOST_BODY_MESSAGE = """
+                                                    Hello %s,
+                                               \s
+                                                    You have a new inquiry from %s regarding your property %s:
+                                               \s
+                                                    Inquiry Type: %s
+                                               \s
+                                                    Message:
+                                                    %s
+                                               \s
+                                                    Please respond to the user at your earliest convenience.
+   \s""";
 
 
     private final EmailRepository emailRepository;
@@ -228,6 +238,38 @@ public class EmailServiceImpl implements EmailService {
 
 
         sendEmail(message, email, event.getUserEmail());
+    }
+
+    @Override
+    public void handleInquiry(HostInquiryEvent event) {
+
+        String formattedBody = INQUIRY_HOST_BODY_MESSAGE.formatted(
+                event.getHosterEmail(),
+                event.getUserEmail(),
+                event.getPropertyTitle(),
+                event.getInquiryType(),
+                event.getBody()
+        );
+
+        Email email = Email
+                .builder()
+                .userId(event.getUserId())
+                .subject(event.getSubject())
+                .body(formattedBody)
+                .emailTrigger(EmailTrigger.INQUIRY_HOST)
+                .status(EmailStatus.PENDING)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(event.getHosterEmail());
+        message.setFrom(fromEmailUsername);
+        message.setSubject(event.getSubject());
+        message.setText(formattedBody);
+
+
+        sendEmail(message, email, event.getHosterEmail());
     }
 
     @Override
