@@ -7,6 +7,8 @@ import com.example.stayconnected.email.service.EmailService;
 import com.example.stayconnected.web.dto.EmailResponse;
 import com.example.stayconnected.web.dto.PageResponse;
 import com.example.stayconnected.web.mapper.DtoMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/emails")
+@Tag(name = "Emails", description = "Manage emails")
 public class EmailController {
 
     private final EmailService emailService;
@@ -32,6 +35,7 @@ public class EmailController {
 
 
     @GetMapping
+    @Operation(summary = "Get emails by search (required = false) and user ID")
     public ResponseEntity<PageResponse<EmailResponse>> getEmailsByUser(
                                                                 @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
                                                                 @RequestParam(value = "pageSize", defaultValue = "4") int pageSize,
@@ -57,6 +61,7 @@ public class EmailController {
     }
 
     @GetMapping("/total")
+    @Operation(summary = "Get total count of emails by user ID and email status (required = false)")
     public ResponseEntity<Long> getTotalEmailsByUserId(@RequestParam(value = "userId") UUID userId,
                                                        @RequestParam(value = "status", required = false) String emailStatus) {
         long totalCountEmails = this.emailService.getTotalEmailsByUserId(userId, emailStatus);
@@ -65,6 +70,7 @@ public class EmailController {
     }
 
     @GetMapping("/status")
+    @Operation(summary = "Get emails by user ID and email status")
     public ResponseEntity<PageResponse<EmailResponse>> getEmailsByUserAndStatus(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "4") int pageSize,
