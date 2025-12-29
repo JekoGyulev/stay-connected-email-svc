@@ -6,7 +6,6 @@ import com.example.stayconnected.email.model.Email;
 import com.example.stayconnected.email.repository.EmailRepository;
 import com.example.stayconnected.email.service.EmailService;
 import com.example.stayconnected.event.payload.*;
-import com.example.stayconnected.web.dto.PageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -117,6 +116,8 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void handleUserRegistered(UserRegisteredEvent event) {
+
+        // TODO: DO NOT APPLY HERE THE NOTIFICATION PREFERENCE CHECK
 
         Email email = Email.builder()
                 .subject(SUCCESSFUL_REGISTER_SUBJECT_MESSAGE)
