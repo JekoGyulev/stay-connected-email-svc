@@ -8,6 +8,7 @@ import com.example.stayconnected.email.service.EmailService;
 import com.example.stayconnected.event.payload.*;
 import com.example.stayconnected.notification_preference.model.NotificationPreference;
 import com.example.stayconnected.notification_preference.service.NotificationPreferenceService;
+import com.example.stayconnected.web.dto.UpsertNotificationPreferenceRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -119,6 +120,11 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void handleUserRegistered(UserRegisteredEvent event) {
+
+        UpsertNotificationPreferenceRequest dto = createDefaultNotificationPreference(event);
+
+        this.notificationPreferenceService.upsert(dto);
+
 
         Email email = Email.builder()
                 .subject(SUCCESSFUL_REGISTER_SUBJECT_MESSAGE)
@@ -325,6 +331,16 @@ public class EmailServiceImpl implements EmailService {
         } finally {
             this.emailRepository.save(email);
         }
+    }
+
+    private static UpsertNotificationPreferenceRequest createDefaultNotificationPreference(UserRegisteredEvent event) {
+        return UpsertNotificationPreferenceRequest.builder()
+                .userId(event.getUserId())
+                .bookingCancellationEnabled(true)
+                .bookingCancellationEnabled(true)
+                .passwordChangeEnabled(true)
+                .notificationsEnabled(true)
+                .build();
     }
 
 }
