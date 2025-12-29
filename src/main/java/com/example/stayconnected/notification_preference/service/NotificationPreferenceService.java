@@ -9,6 +9,6 @@ public interface NotificationPreferenceService {
 
     NotificationPreference getNotificationPreferenceByUserId(UUID userId);
 
-    void upsert(UpsertNotificationPreferenceRequest request);
+    boolean upsert(UpsertNotificationPreferenceRequest request);
 
 }

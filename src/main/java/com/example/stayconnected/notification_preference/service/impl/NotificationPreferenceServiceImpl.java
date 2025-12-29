@@ -33,7 +33,7 @@ public class NotificationPreferenceServiceImpl implements NotificationPreference
     }
 
     @Override
-    public void upsert(UpsertNotificationPreferenceRequest request) {
+    public boolean upsert(UpsertNotificationPreferenceRequest request) {
 
         Optional<NotificationPreference> optionalPreference = this.notificationPreferenceRepository.findByUserId(request.getUserId());
 
@@ -51,8 +51,12 @@ public class NotificationPreferenceServiceImpl implements NotificationPreference
             log.info("Successfully updated notification preference for user with id [%s]"
                     .formatted(request.getUserId()));
 
-        } else {
-            NotificationPreference preference =
+            return false;
+        }
+
+
+
+        NotificationPreference preference =
                     NotificationPreference.builder()
                             .userId(request.getUserId())
                             .notificationsEnabled(request.isNotificationsEnabled())
@@ -61,12 +65,13 @@ public class NotificationPreferenceServiceImpl implements NotificationPreference
                             .passwordChangeEnabled(request.isPasswordChangeEnabled())
                             .build();
 
-            this.notificationPreferenceRepository.save(preference);
+        this.notificationPreferenceRepository.save(preference);
 
 
-            log.info("Successfully created notification preference for user with id [%s]"
+        log.info("Successfully created notification preference for user with id [%s]"
                     .formatted(request.getUserId()));
-        }
+
+        return true;
 
     }
 }
