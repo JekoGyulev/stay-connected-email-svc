@@ -6,6 +6,8 @@ import com.example.stayconnected.email.model.Email;
 import com.example.stayconnected.email.repository.EmailRepository;
 import com.example.stayconnected.email.service.EmailService;
 import com.example.stayconnected.event.payload.*;
+import com.example.stayconnected.notification_preference.model.NotificationPreference;
+import com.example.stayconnected.notification_preference.service.NotificationPreferenceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -103,21 +104,21 @@ public class EmailServiceImpl implements EmailService {
 
     private final EmailRepository emailRepository;
     private final MailSender mailSender;
+    private final NotificationPreferenceService notificationPreferenceService;
 
     @Value("${spring.mail.username}")
     private String fromEmailUsername;
 
     @Autowired
-    public EmailServiceImpl(EmailRepository emailRepository, MailSender mailSender) {
+    public EmailServiceImpl(EmailRepository emailRepository, MailSender mailSender, NotificationPreferenceService notificationPreferenceService) {
         this.emailRepository = emailRepository;
         this.mailSender = mailSender;
+        this.notificationPreferenceService = notificationPreferenceService;
     }
 
 
     @Override
     public void handleUserRegistered(UserRegisteredEvent event) {
-
-        // TODO: DO NOT APPLY HERE THE NOTIFICATION PREFERENCE CHECK
 
         Email email = Email.builder()
                 .subject(SUCCESSFUL_REGISTER_SUBJECT_MESSAGE)
@@ -144,6 +145,15 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void handleReservationBooked(ReservationBookedEvent event) {
 
+        NotificationPreference preference = this.notificationPreferenceService.getNotificationPreferenceByUserId(event.getUserId());
+
+        if (!preference.isNotificationsEnabled() || !preference.isBookingConfirmationEnabled()) {
+            log.info("Skipping sending booking confirmation email for user {} because notifications are disabled.",
+                    event.getUserId());
+
+            return;
+        }
+
         Email email = Email.builder()
                 .subject(SUCCESSFUL_RESERVATION_BOOKED_SUBJECT_MESSAGE)
                 .body(SUCCESSFUL_RESERVATION_BOOKED_BODY_MESSAGE
@@ -153,7 +163,6 @@ public class EmailServiceImpl implements EmailService {
                 .userId(event.getUserId())
                 .createdAt(LocalDateTime.now())
                 .build();
-
 
 
         SimpleMailMessage message =  new SimpleMailMessage();
@@ -168,6 +177,16 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void handleReservationCancelled(ReservationCancelledEvent event) {
+
+        NotificationPreference preference = this.notificationPreferenceService.getNotificationPreferenceByUserId(event.getUserId());
+
+        if (!preference.isNotificationsEnabled() || !preference.isBookingCancellationEnabled()) {
+            log.info("Skipping sending booking cancellation email for user {} because notifications are disabled.",
+                    event.getUserId());
+
+            return;
+        }
+
 
         Email email = Email.builder()
                 .subject(SUCCESSFUL_RESERVATION_CANCELLED_SUBJECT_MESSAGE)
@@ -215,6 +234,15 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void handlePasswordChanged(PasswordChangedEvent event) {
+
+        NotificationPreference preference = this.notificationPreferenceService.getNotificationPreferenceByUserId(event.getUserId());
+
+        if (!preference.isNotificationsEnabled() || !preference.isPasswordChangeEnabled()) {
+            log.info("Skipping sending password change email for user {} because notifications are disabled.",
+                    event.getUserId());
+            return;
+        }
+
 
         LocalDateTime changedAt = event.getChangedAt();
 

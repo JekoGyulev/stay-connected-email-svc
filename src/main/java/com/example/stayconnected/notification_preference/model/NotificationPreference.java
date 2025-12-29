@@ -24,7 +24,7 @@ public class NotificationPreference {
     @Column(name = "user_id",nullable = false)
     private UUID userId;
     @Column(name = "are_notifications_enabled", nullable = false)
-    private boolean areNotificationsEnabled;
+    private boolean notificationsEnabled;
     @Column(name = "is_booking_confirmation_notification_enabled", nullable = false)
     private boolean bookingConfirmationEnabled;
     @Column(name = "is_booking_cancellation_notification_enabled", nullable = false)
