@@ -1,7 +1,7 @@
 package com.example.stayconnected.web.controller;
 
 
-import com.example.stayconnected.email.enums.EmailStatus;
+
 import com.example.stayconnected.email.model.Email;
 import com.example.stayconnected.email.service.EmailService;
 import com.example.stayconnected.web.dto.EmailResponse;

@@ -28,14 +28,15 @@ public class NotificationPreferenceServiceImpl implements NotificationPreference
     @Override
     public NotificationPreference getNotificationPreferenceByUserId(UUID userId) {
         return this.notificationPreferenceRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("NotificationPreference with user id [%s] not found"
+                .orElseThrow(() -> new RuntimeException("Notification preference with user id [%s] not found"
                         .formatted(userId)));
     }
 
     @Override
     public boolean upsert(UpsertNotificationPreferenceRequest request) {
 
-        Optional<NotificationPreference> optionalPreference = this.notificationPreferenceRepository.findByUserId(request.getUserId());
+        Optional<NotificationPreference> optionalPreference = this.notificationPreferenceRepository.
+                findByUserId(request.getUserId());
 
 
         if (optionalPreference.isPresent()) {
@@ -53,7 +54,6 @@ public class NotificationPreferenceServiceImpl implements NotificationPreference
 
             return false;
         }
-
 
 
         NotificationPreference preference =

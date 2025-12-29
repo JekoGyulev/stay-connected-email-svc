@@ -10,11 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpResponse;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/notification-preferences")
+@RequestMapping("/api/v1/notification-preferences")
 public class NotificationPreferenceController {
 
     private final NotificationPreferenceService notificationPreferenceService;
